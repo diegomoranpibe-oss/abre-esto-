@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Para Bella 💖</title>
+
+<style>
+body {
+    margin: 0;
+    overflow: hidden;
+    font-family: Arial, sans-serif;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+
+    background: linear-gradient(-45deg, #0f0c29, #302b63, #24243e, #1a1a40);
+    background-size: 400% 400%;
+    animation: fondo 12s ease infinite;
+}
+
+@keyframes fondo {
+    0% {background-position: 0% 50%;}
+    50% {background-position: 100% 50%;}
+    100% {background-position: 0% 50%;}
+}
+
+/* estrellas */
+body::before {
+    content: "";
+    position: absolute;
+    width: 200%;
+    height: 200%;
+    background-image: radial-gradient(white 1px, transparent 1px);
+    background-size: 60px 60px;
+    opacity: 0.25;
+    animation: estrellas 80s linear infinite;
+}
+
+@keyframes estrellas {
+    from {transform: translateY(0);}
+    to {transform: translateY(-120px);}
+}
+
+/* rosa */
+.rosa {
+    position: relative;
+    width: 260px;
+    z-index: 2;
+}
+
+.rosa img {
+    width: 100%;
+    filter: drop-shadow(0 0 15px rgba(255,100,150,0.4));
+}
+
+/* zonas clic */
+.petalo {
+    position: absolute;
+    width: 70px;
+    height: 70px;
+    cursor: pointer;
+}
+
+/* posiciones */
+.p1 { top: 20px; left: 90px; }
+.p2 { top: 90px; left: 160px; }
+.p3 { top: 150px; left: 90px; }
+.p4 { top: 90px; left: 10px; }
+.p5 { top: 60px; left: 70px; }
+
+/* pétalo animado */
+.flotante {
+    position: absolute;
+    width: 140px;
+    height: 140px;
+    background: radial-gradient(#ff7eb3, #ff1e78);
+    border-radius: 60% 40% 60% 40%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 15px;
+    color: white;
+    font-size: 15px;
+    box-shadow: 0 0 25px rgba(255, 50, 150, 0.6);
+
+    animation: salir 0.6s forwards;
+    z-index: 10;
+}
+
+@keyframes salir {
+    from {
+        transform: scale(0.2) rotate(0deg);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1.3) rotate(15deg);
+        opacity: 1;
+    }
+}
+
+/* caer */
+.caer {
+    animation: caer 1s forwards;
+}
+
+@keyframes caer {
+    to {
+        transform: translateY(700px) rotate(120deg);
+        opacity: 0;
+    }
+}
+
+/* final */
+.final {
+    position: absolute;
+    color: white;
+    font-size: 28px;
+    text-align: center;
+    animation: aparecer 2s forwards;
+}
+
+@keyframes aparecer {
+    from {opacity: 0;}
+    to {opacity: 1;}
+}
+</style>
+</head>
+
+<body>
+
+<div class="rosa">
+    <img src="https://i.imgur.com/8Km9tLL.png">
+
+    <div class="petalo p1" onclick="activar(0)"></div>
+    <div class="petalo p2" onclick="activar(1)"></div>
+    <div class="petalo p3" onclick="activar(2)"></div>
+    <div class="petalo p4" onclick="activar(3)"></div>
+    <div class="petalo p5" onclick="activar(4)"></div>
+</div>
+
+<!-- música -->
+<audio autoplay loop>
+    <source src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_c8e14b6c6e.mp3" type="audio/mp3">
+</audio>
+
+<script>
+const mensajes = [
+    "Buenos dias mi princesa hermosa, lamento no hacerte entregado una rosa, tuve muchos problemas con el inter y la uni...pero te hice esto",
+    "Paso por acá para recordarte que eres una chica increible, capaz, fuerte, valiente e inteligente, no solo "una chica" eres MI CHICA y eso hace que mi amor por ti crezca, porque te admiro demasiado, de verdad",
+    "Aun recuerdo esa noche, donde hablando de ti, mencionaste que no querías algo serio, me dolió MUCHO, pero no podria aceptar que no querias nada conmigo, solo era dificil creer que no podia cumplir con lo que deseaba, que era que me amaras...",
+    "Y HOY LO HACES, ver este cambio tan increible, ver tus sacrificios y tus acciones...me hacen sentir bien, dijiste que tuviste envidia de verlos a todos con sus parejas...pero no dejaré que te sientas así, no te daré ninguna razon para envidiar a unas feas, pq tu eres espcecial, aunque nadie te haya dado...lo que mereces. llegué yo. para culminar dejaré algo que escribí para ti:",
+    "La vida nunca fue tan bonita, pero era aceptable, nunca fue la mas comprensiva, pero si imperfecta, somos miles y miles de infinitos sin sentido, millones de sentimientos sin razon, billones de vidas paralelas, pero esa vida imperfecta, cero amable e imparcial, se acabó tan rapido como soplar una Vela y me hizo entender que aunque hayan millones de flores..."
+];
+
+let activo = null;
+let usados = 0;
+
+function activar(i) {
+    if (activo !== null) return;
+
+    let petalo = document.createElement("div");
+    petalo.className = "flotante";
+    petalo.innerText = mensajes[i];
+
+    petalo.style.left = "50%";
+    petalo.style.top = "40%";
+    petalo.style.transform = "translate(-50%, -50%)";
+
+    document.body.appendChild(petalo);
+
+    activo = petalo;
+
+    document.body.onclick = () => {
+        if (activo) {
+            activo.classList.add("caer");
+
+            setTimeout(() => {
+                activo.remove();
+                activo = null;
+                usados++;
+
+                if (usados === 5) final();
+            }, 1000);
+        }
+    };
+}
+
+function final() {
+    let fin = document.createElement("div");
+    fin.className = "final";
+    fin.innerText = "...TU eres mi flor favorita BELLA 🌹💖";
+    document.body.appendChild(fin);
+}
+</script>
+
+</body>
+</html>
